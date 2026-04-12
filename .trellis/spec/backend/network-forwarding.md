@@ -30,7 +30,8 @@ level = "info"
 [[listeners]]
 name = "default"
 listen = "127.0.0.1:9718"
-upstream = "https://xxx.domain.com:8443"
+# Domain/path used for TLS SNI + Host semantics.
+upstream = "https://xxx.domain.com"
 connect_ip = "a.b.c.d"
 connect_port = 8443
 # sni = "xxx.domain.com"
@@ -44,6 +45,7 @@ connect_port = 8443
 - Incoming protocol: local HTTP listener (`listen`)
 - Outgoing protocol: HTTPS only (`upstream` must be `https://`)
 - TCP connect target: `connect_ip:connect_port`
+- `upstream` host/path defines TLS/HTTP semantic target; runtime dial port is `connect_port`
 - TLS ServerName (SNI): `sni` if provided, otherwise upstream host
 - HTTP Host header: `host_header` if provided, otherwise SNI/domain
 - Hop-by-hop request headers must not be forwarded

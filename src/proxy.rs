@@ -23,6 +23,7 @@ use crate::config::{ResolvedConfig, ResolvedListener};
 struct ProxyState {
     listener_name: String,
     upstream_base: Url,
+    connect_addr: SocketAddr,
     client: reqwest::Client,
     host_header: HeaderValue,
 }
@@ -127,6 +128,7 @@ fn build_state(listener: &ResolvedListener) -> Result<ProxyState> {
     Ok(ProxyState {
         listener_name: listener.name.clone(),
         upstream_base: listener.upstream_base.clone(),
+        connect_addr: listener.connect_addr,
         client,
         host_header,
     })
@@ -172,7 +174,9 @@ async fn proxy_handler(
                 listener = %state.listener_name,
                 method = %method,
                 target = %target_url,
+                connect = %state.connect_addr,
                 error = %err,
+                error_debug = ?err,
                 "upstream request failed"
             );
             return text_response(

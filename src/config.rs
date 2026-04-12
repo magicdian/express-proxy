@@ -1,4 +1,4 @@
-use anyhow::{Context, Result, bail};
+use anyhow::{Context, Result, anyhow, bail};
 use serde::Deserialize;
 use std::fs;
 use std::net::{IpAddr, SocketAddr};
@@ -142,6 +142,9 @@ fn resolve_config(parsed: RawConfig) -> Result<ResolvedConfig> {
         upstream_base
             .set_host(Some(&server_name))
             .with_context(|| format!("listener '{name}' has invalid sni/server_name"))?;
+        upstream_base
+            .set_port(Some(item.connect_port))
+            .map_err(|_| anyhow!("listener '{name}' has invalid connect_port"))?;
 
         let connect_addr = SocketAddr::new(connect_ip, item.connect_port);
         let host_header = item.host_header.unwrap_or_else(|| server_name.clone());
@@ -179,7 +182,9 @@ level = "info"
 [[listeners]]
 name = "default"
 listen = "{default_listen}"
-upstream = "https://xxx.domain.com:8443"
+# Upstream domain/path for TLS SNI + HTTP Host semantics.
+upstream = "https://xxx.domain.com"
+# Real TCP dial target.
 connect_ip = "a.b.c.d"
 connect_port = 8443
 # Optional: override TLS SNI. If omitted, host from `upstream` is used.

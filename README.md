@@ -41,12 +41,18 @@ level = "info"
 [[listeners]]
 name = "default"
 listen = "127.0.0.1:9718"
-upstream = "https://xxx.domain.com:8443"
+# Domain/path used for TLS SNI + Host semantics.
+upstream = "https://xxx.domain.com"
 connect_ip = "a.b.c.d"
+# Real TCP dial port.
 connect_port = 8443
 # sni = "xxx.domain.com"
 # host_header = "xxx.domain.com"
 ```
+
+Flow model:
+
+- local -> listen -> connect_ip:connect_port -> upstream(domain/SNI)
 
 ## Linux service
 
