@@ -43,6 +43,7 @@ name = "default"
 listen = "127.0.0.1:9718"
 upstream = "https://xxx.domain.com:8443"
 connect_ip = "a.b.c.d"
+connect_port = 8443
 # sni = "xxx.domain.com"
 # host_header = "xxx.domain.com"
 ```

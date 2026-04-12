@@ -32,6 +32,7 @@ name = "default"
 listen = "127.0.0.1:9718"
 upstream = "https://xxx.domain.com:8443"
 connect_ip = "a.b.c.d"
+connect_port = 8443
 # sni = "xxx.domain.com"
 # host_header = "xxx.domain.com"
 ```
@@ -42,7 +43,7 @@ connect_ip = "a.b.c.d"
 
 - Incoming protocol: local HTTP listener (`listen`)
 - Outgoing protocol: HTTPS only (`upstream` must be `https://`)
-- TCP connect target: `connect_ip:upstream_port`
+- TCP connect target: `connect_ip:connect_port`
 - TLS ServerName (SNI): `sni` if provided, otherwise upstream host
 - HTTP Host header: `host_header` if provided, otherwise SNI/domain
 - Hop-by-hop request headers must not be forwarded
@@ -68,6 +69,7 @@ connect_ip = "a.b.c.d"
 | Upstream scheme | Must be `https` | CLI exits non-zero |
 | `listen` parse | Must be valid socket addr | CLI exits non-zero |
 | `connect_ip` parse | Must be valid IP | CLI exits non-zero |
+| `connect_port` parse | Must be valid TCP port (1-65535) | CLI exits non-zero |
 | Host/SNI parse | Must be valid host/header value | CLI exits non-zero |
 | Upstream request | Network/TLS failure | Return HTTP 502 |
 | Response build | Local response construction failure | Return HTTP 500 |
@@ -77,7 +79,7 @@ connect_ip = "a.b.c.d"
 
 ### Good
 
-- Configured `upstream=https://api.example.com:8443`, `connect_ip=1.2.3.4`
+- Configured `upstream=https://api.example.com:8443`, `connect_ip=1.2.3.4`, `connect_port=8443`
 - Local `http://127.0.0.1:9718/v1/chat/completions` forwards successfully
 - TLS cert validates against `api.example.com`
 - SSE stream is relayed chunk-by-chunk
@@ -91,6 +93,7 @@ connect_ip = "a.b.c.d"
 
 - `upstream = "http://..."` -> reject on startup
 - `connect_ip = "not-an-ip"` -> reject on startup
+- `connect_port = 0` -> reject on startup
 - Missing config -> template is created, process exits for user edit
 
 ## 6. Tests Required (with assertion points)

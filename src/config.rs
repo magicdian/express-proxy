@@ -50,6 +50,7 @@ struct RawListener {
     listen: String,
     upstream: String,
     connect_ip: String,
+    connect_port: u16,
     sni: Option<String>,
     host_header: Option<String>,
 }
@@ -121,6 +122,10 @@ fn resolve_config(parsed: RawConfig) -> Result<ResolvedConfig> {
             .parse()
             .with_context(|| format!("listener '{name}' has invalid connect_ip"))?;
 
+        if item.connect_port == 0 {
+            bail!("listener '{name}' has invalid connect_port: 0");
+        }
+
         let mut upstream_base = Url::parse(&item.upstream)
             .with_context(|| format!("listener '{name}' has invalid upstream URL"))?;
 
@@ -138,11 +143,7 @@ fn resolve_config(parsed: RawConfig) -> Result<ResolvedConfig> {
             .set_host(Some(&server_name))
             .with_context(|| format!("listener '{name}' has invalid sni/server_name"))?;
 
-        let port = upstream_base
-            .port_or_known_default()
-            .context("upstream URL requires an explicit or known port")?;
-
-        let connect_addr = SocketAddr::new(connect_ip, port);
+        let connect_addr = SocketAddr::new(connect_ip, item.connect_port);
         let host_header = item.host_header.unwrap_or_else(|| server_name.clone());
 
         listeners.push(ResolvedListener {
@@ -180,6 +181,7 @@ name = "default"
 listen = "{default_listen}"
 upstream = "https://xxx.domain.com:8443"
 connect_ip = "a.b.c.d"
+connect_port = 8443
 # Optional: override TLS SNI. If omitted, host from `upstream` is used.
 # sni = "xxx.domain.com"
 # Optional: override HTTP Host header. If omitted, SNI/domain is used.
