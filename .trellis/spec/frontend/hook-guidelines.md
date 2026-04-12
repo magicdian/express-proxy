@@ -1,51 +1,50 @@
 # Hook Guidelines
 
-> How hooks are used in this project.
+> How hooks should be used in this project.
 
 ---
 
-## Overview
+## Current Reality
 
-<!--
-Document your project's hook conventions here.
-
-Questions to answer:
-- What custom hooks do you have?
-- How do you handle data fetching?
-- What are the naming conventions?
-- How do you share stateful logic?
--->
-
-(To be filled by the team)
+No frontend hooks exist yet.
+Apply these conventions when introducing first custom hooks.
 
 ---
 
 ## Custom Hook Patterns
 
-<!-- How to create and structure custom hooks -->
+- Hook names must start with `use`.
+- A hook should encapsulate one concern (fetching, polling, local derived state).
+- Keep side-effects inside hook internals, not scattered in callers.
 
-(To be filled by the team)
+Example pattern:
+
+```ts
+export function useModelLatency(modelId: string) {
+  // encapsulate request, loading/error state, and refresh behavior
+}
+```
 
 ---
 
 ## Data Fetching
 
-<!-- How data fetching is handled (React Query, SWR, etc.) -->
-
-(To be filled by the team)
+- Choose one server-state solution for the app and stay consistent.
+- Normalize error/loading contract across hooks.
+- Support cancellation/cleanup for in-flight requests when component unmounts.
 
 ---
 
 ## Naming Conventions
 
-<!-- Hook naming rules (use*, etc.) -->
-
-(To be filled by the team)
+- `useXxxQuery` for read operations
+- `useXxxMutation` for write operations
+- `useXxxState` for local composite state
 
 ---
 
 ## Common Mistakes
 
-<!-- Hook-related mistakes your team has made -->
-
-(To be filled by the team)
+- Triggering effects with unstable dependency arrays.
+- Returning overly broad mutable objects from hooks.
+- Hiding critical errors inside silent fallback values.

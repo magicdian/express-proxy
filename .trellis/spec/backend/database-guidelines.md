@@ -4,48 +4,44 @@
 
 ---
 
-## Overview
+## Current Status
 
-<!--
-Document your project's database conventions here.
-
-Questions to answer:
-- What ORM/query library do you use?
-- How are migrations managed?
-- What are the naming conventions for tables/columns?
-- How do you handle transactions?
--->
-
-(To be filled by the team)
+This project currently has **no database**.
+Do not add persistence casually; the current runtime model is stateless forwarding + file-based config/logs in `~/.eproxy/`.
 
 ---
 
-## Query Patterns
+## If Database Is Introduced Later
 
-<!-- How should queries be written? Batch operations? -->
+Treat DB introduction as an architecture change requiring:
 
-(To be filled by the team)
-
----
-
-## Migrations
-
-<!-- How to create and run migrations -->
-
-(To be filled by the team)
+1. A new code-spec update in this directory
+2. Migration tooling decision (for example `sqlx migrate`)
+3. Backup/rollback plan
+4. Test coverage for migration and rollback paths
 
 ---
 
-## Naming Conventions
+## Naming Conventions (Future Contract)
 
-<!-- Table names, column names, index names -->
+If added, default naming should be:
 
-(To be filled by the team)
+- Tables: snake_case plural (`listener_routes`)
+- Columns: snake_case (`created_at`)
+- Indexes: `idx_<table>_<column(s)>`
 
 ---
 
-## Common Mistakes
+## Query Patterns (Future Contract)
 
-<!-- Database-related mistakes your team has made -->
+- Keep SQL/query code in dedicated module(s), not mixed with proxy request handlers.
+- Wrap multi-step mutations in transactions.
+- Never log secrets/tokens in query logs.
 
-(To be filled by the team)
+---
+
+## Common Mistakes To Avoid
+
+- Mixing runtime cache and durable storage semantics.
+- Coupling live request path with blocking DB operations.
+- Introducing DB without migration and rollback tests.

@@ -1,0 +1,4 @@
+{"file": ".trellis/workflow.md", "reason": "Project workflow and conventions"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend development guide"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "MVP error propagation and CLI failure behavior"}
+{"file": ".trellis/spec/backend/logging-guidelines.md", "reason": "Logging setup and sensitive-data guardrails"}

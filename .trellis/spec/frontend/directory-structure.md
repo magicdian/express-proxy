@@ -1,54 +1,50 @@
 # Directory Structure
 
-> How frontend code is organized in this project.
+> How frontend code should be organized once introduced.
 
 ---
 
-## Overview
+## Current Reality
 
-<!--
-Document your project's frontend directory structure here.
-
-Questions to answer:
-- Where do components live?
-- How are features/modules organized?
-- Where are shared utilities?
-- How are assets organized?
--->
-
-(To be filled by the team)
+No frontend code exists in this repository yet.
+The structure below is the required starting contract for first implementation.
 
 ---
 
-## Directory Layout
+## Bootstrap Directory Layout
 
-```
-<!-- Replace with your actual structure -->
-src/
-├── ...
-└── ...
+```text
+web/
+├── src/
+│   ├── app/          # app shell, routes, providers
+│   ├── features/     # feature-based modules
+│   ├── components/   # shared UI components
+│   ├── hooks/        # shared hooks
+│   ├── lib/          # API client, utils, constants
+│   ├── types/        # shared type declarations
+│   └── styles/       # global/theme styles
+└── tests/
 ```
 
 ---
 
-## Module Organization
+## Module Organization Rules
 
-<!-- How should new features be organized? -->
-
-(To be filled by the team)
+- Prefer feature folders for domain logic (`features/chat`, `features/models`).
+- Shared logic belongs in `lib/` or `hooks/` only when reused by 2+ features.
+- Keep page/router composition in `app/`, not in deep component files.
 
 ---
 
 ## Naming Conventions
 
-<!-- File and folder naming rules -->
-
-(To be filled by the team)
+- Components: `PascalCase.tsx`
+- Hooks: `useXxx.ts`
+- Utilities/types: `snake_case.ts` or `kebab-case.ts` (choose one and stay consistent)
+- Feature folders: `kebab-case`
 
 ---
 
-## Examples
+## Example Targets (to add when code exists)
 
-<!-- Link to well-organized modules as examples -->
-
-(To be filled by the team)
+When frontend code lands, add at least 2-3 real file paths from repo here.

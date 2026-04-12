@@ -4,48 +4,42 @@
 
 ---
 
-## Overview
+## Current Reality
 
-<!--
-Document your project's quality standards here.
-
-Questions to answer:
-- What patterns are forbidden?
-- What linting rules do you enforce?
-- What are your testing requirements?
-- What code review standards apply?
--->
-
-(To be filled by the team)
+No frontend code exists yet.
+These are baseline quality gates for first and future frontend work.
 
 ---
 
 ## Forbidden Patterns
 
-<!-- Patterns that should never be used and why -->
-
-(To be filled by the team)
+- Direct DOM manipulation bypassing framework model.
+- UI components making side-effectful network calls inline without hook/service layer.
+- Silent error swallowing in async flows.
 
 ---
 
 ## Required Patterns
 
-<!-- Patterns that must always be used -->
-
-(To be filled by the team)
+- Lint and typecheck must pass before merge.
+- UI states include loading, success, error, and empty-state handling where relevant.
+- New components must include accessibility checks.
 
 ---
 
 ## Testing Requirements
 
-<!-- What level of testing is expected -->
+Minimum for new frontend features:
 
-(To be filled by the team)
+1. Component behavior tests for user-visible logic.
+2. Hook tests for custom state/data logic.
+3. Typecheck and lint in CI.
 
 ---
 
 ## Code Review Checklist
 
-<!-- What reviewers should check -->
-
-(To be filled by the team)
+- Is state scope minimal and intentional?
+- Are API contracts typed and validated?
+- Is error/loading UX explicitly handled?
+- Is accessibility considered for interactive elements?
