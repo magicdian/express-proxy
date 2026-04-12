@@ -1,12 +1,13 @@
 # Backend Development Guidelines
 
-> Best practices for backend development in this project.
+> Executable backend conventions for `eproxy`.
 
 ---
 
 ## Overview
 
-This directory contains guidelines for backend development. Fill in each file with your project's specific conventions.
+This project is currently a Rust CLI/network-forwarder backend.
+Guidelines here are based on real implementation in `src/` and should be treated as implementation contracts.
 
 ---
 
@@ -14,24 +15,33 @@ This directory contains guidelines for backend development. Fill in each file wi
 
 | Guide | Description | Status |
 |-------|-------------|--------|
-| [Directory Structure](./directory-structure.md) | Module organization and file layout | To fill |
-| [Database Guidelines](./database-guidelines.md) | ORM patterns, queries, migrations | To fill |
-| [Error Handling](./error-handling.md) | Error types, handling strategies | To fill |
-| [Quality Guidelines](./quality-guidelines.md) | Code standards, forbidden patterns | To fill |
-| [Logging Guidelines](./logging-guidelines.md) | Structured logging, log levels | To fill |
+| [Directory Structure](./directory-structure.md) | Module organization and file layout | Filled |
+| [Database Guidelines](./database-guidelines.md) | DB policy and future adoption contract | Filled (No DB yet) |
+| [Error Handling](./error-handling.md) | Error types, propagation, user-facing behavior | Filled |
+| [Logging Guidelines](./logging-guidelines.md) | Structured logging and log safety | Filled |
+| [Quality Guidelines](./quality-guidelines.md) | Quality gates and review checklist | Filled |
+| [Network Forwarding Code-Spec](./network-forwarding.md) | SNI/IP forwarding executable contract | Filled |
 
 ---
 
-## How to Fill These Guidelines
+## Pre-Development Checklist
 
-For each guideline file:
+Before editing backend code, read:
 
-1. Document your project's **actual conventions** (not ideals)
-2. Include **code examples** from your codebase
-3. List **forbidden patterns** and why
-4. Add **common mistakes** your team has made
+1. `quality-guidelines.md`
+2. `error-handling.md`
+3. `logging-guidelines.md`
+4. `network-forwarding.md` (for proxy/transport changes)
+5. `database-guidelines.md` (only if DB is introduced)
 
-The goal is to help AI assistants and new team members understand how YOUR project works.
+---
+
+## Current Reality Snapshot
+
+- Runtime: Rust + Tokio
+- CLI: `run`, `daemon`, `install`
+- Proxy behavior: local HTTP -> upstream HTTPS, connect by IP, validate cert with domain/SNI
+- Database: not used
 
 ---
 

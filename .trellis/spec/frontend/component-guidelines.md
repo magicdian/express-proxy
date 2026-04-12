@@ -1,59 +1,66 @@
 # Component Guidelines
 
-> How components are built in this project.
+> How components should be built in this project.
 
 ---
 
-## Overview
+## Current Reality
 
-<!--
-Document your project's component conventions here.
-
-Questions to answer:
-- What component patterns do you use?
-- How are props defined?
-- How do you handle composition?
-- What accessibility standards apply?
--->
-
-(To be filled by the team)
+No frontend component code exists yet.
+Use these rules as the baseline contract for first components.
 
 ---
 
 ## Component Structure
 
-<!-- Standard structure of a component file -->
+Recommended order inside component file:
 
-(To be filled by the team)
+1. imports
+2. local types/interfaces
+3. component function
+4. small private helpers
+
+Minimal example contract:
+
+```tsx
+type ModelCardProps = {
+  modelId: string;
+  latencyMs: number;
+};
+
+export function ModelCard({ modelId, latencyMs }: ModelCardProps) {
+  return <article>{modelId} ({latencyMs}ms)</article>;
+}
+```
 
 ---
 
 ## Props Conventions
 
-<!-- How props should be defined and typed -->
-
-(To be filled by the team)
+- Use explicit prop types; avoid `any`.
+- Prefer required props; optional only when truly optional in UI semantics.
+- Prefer primitive and stable object props over deep mutable structures.
 
 ---
 
 ## Styling Patterns
 
-<!-- How styles are applied (CSS modules, styled-components, Tailwind, etc.) -->
-
-(To be filled by the team)
+- Keep style strategy consistent within one app (CSS Modules or utility-first or CSS-in-JS).
+- Do not mix multiple styling paradigms in one feature unless justified.
+- Avoid inline style objects for complex styling.
 
 ---
 
 ## Accessibility
 
-<!-- A11y requirements and patterns -->
-
-(To be filled by the team)
+- Interactive elements must be keyboard reachable.
+- Use semantic HTML first (`button`, `label`, `nav`, `main`).
+- Inputs require accessible labels.
 
 ---
 
 ## Common Mistakes
 
-<!-- Component-related mistakes your team has made -->
-
-(To be filled by the team)
+- Dumping business logic into presentational components.
+- Overusing optional props instead of separate components.
+- Replacing semantic elements with generic `div` nodes.

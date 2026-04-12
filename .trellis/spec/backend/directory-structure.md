@@ -6,49 +6,52 @@
 
 ## Overview
 
-<!--
-Document your project's backend directory structure here.
-
-Questions to answer:
-- How are modules/packages organized?
-- Where does business logic live?
-- Where are API endpoints defined?
-- How are utilities and helpers organized?
--->
-
-(To be filled by the team)
+The backend is a single Rust binary crate with domain-oriented modules under `src/`.
+Keep module boundaries small and explicit: CLI orchestration in `main.rs`, behavior in dedicated modules.
 
 ---
 
 ## Directory Layout
 
-```
-<!-- Replace with your actual structure -->
+```text
 src/
-├── ...
-└── ...
+├── main.rs      # CLI entrypoint, command dispatch, logging bootstrap
+├── config.rs    # ~/.eproxy layout + config TOML parsing/validation
+├── proxy.rs     # HTTP listener + upstream forwarding pipeline
+├── daemon.rs    # background process spawn and pid management
+└── install.rs   # Linux systemd --user installation flow
 ```
 
 ---
 
 ## Module Organization
 
-<!-- How should new features/modules be organized? -->
+- `main.rs` only wires command flow; it should not contain transport logic.
+- `config.rs` owns config schema and validation rules.
+- `proxy.rs` owns request/response forwarding behavior.
+- `daemon.rs` owns process lifecycle for detached mode.
+- `install.rs` owns Linux-specific service registration.
 
-(To be filled by the team)
+If a new feature introduces a new responsibility (for example metrics), add a new module rather than bloating existing ones.
 
 ---
 
 ## Naming Conventions
 
-<!-- File and folder naming rules -->
-
-(To be filled by the team)
+- File names: lowercase snake_case (`proxy.rs`, `install.rs`).
+- Types: PascalCase (`ResolvedConfig`, `ResolvedListener`).
+- Functions: snake_case (`load_or_bootstrap`, `spawn_daemon`).
+- CLI subcommands: lowercase words (`run`, `daemon`, `install`).
 
 ---
 
-## Examples
+## Real Examples
 
-<!-- Link to well-organized modules as examples -->
+1. Command dispatch stays in `main.rs`, implementation delegated to module functions.
+2. Config validation is centralized in `resolve_config` rather than spread across call sites.
+3. Forwarding state is encapsulated in `ProxyState` to keep request handler stateless.
 
-(To be filled by the team)
+Reference files:
+- `src/main.rs`
+- `src/config.rs`
+- `src/proxy.rs`

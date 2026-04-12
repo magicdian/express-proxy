@@ -1,51 +1,41 @@
 # Type Safety
 
-> Type safety patterns in this project.
+> Type safety patterns for frontend code.
 
 ---
 
-## Overview
+## Current Reality
 
-<!--
-Document your project's type safety conventions here.
-
-Questions to answer:
-- What type system do you use?
-- How are types organized?
-- What validation library do you use?
-- How do you handle type inference?
--->
-
-(To be filled by the team)
+No frontend TypeScript code exists yet.
+Use this as baseline for first TS module.
 
 ---
 
 ## Type Organization
 
-<!-- Where types are defined, shared types vs local types -->
-
-(To be filled by the team)
+- Feature-local types stay near feature files.
+- Cross-feature contracts go into shared `types/`.
+- API payload types should map to backend contract fields explicitly.
 
 ---
 
 ## Validation
 
-<!-- Runtime validation patterns (Zod, Yup, io-ts, etc.) -->
-
-(To be filled by the team)
+- Runtime input validation is required at external boundaries (API responses, URL params, storage restores).
+- Prefer schema-driven validation and inferred static types.
 
 ---
 
 ## Common Patterns
 
-<!-- Type utilities, generics, type guards -->
-
-(To be filled by the team)
+- Prefer discriminated unions for state machines.
+- Prefer narrow string unions over free-form strings where possible.
+- Use small type guards for uncertain runtime data.
 
 ---
 
 ## Forbidden Patterns
 
-<!-- any, type assertions, etc. -->
-
-(To be filled by the team)
+- `any` in production code.
+- Blind `as` casting for API responses.
+- Optional-everything payload types without validation.
