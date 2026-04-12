@@ -69,18 +69,18 @@ pub async fn run(config: ResolvedConfig) -> Result<()> {
         }
         first = join_set.join_next() => {
             let _ = shutdown_tx.send(true);
-            let mut first_err = Some(match first {
+            let first_err = match first {
                 Some(Ok(Ok(()))) => anyhow!("a listener exited unexpectedly"),
                 Some(Ok(Err(err))) => err,
                 Some(Err(err)) => anyhow!("listener task join error: {err}"),
                 None => anyhow!("no listener tasks running"),
-            });
+            };
 
             if let Err(err) = drain_join_set(&mut join_set).await {
                 warn!(error = %err, "encountered extra errors while shutting down listeners");
             }
 
-            Err(first_err.take().expect("first error must exist"))
+            Err(first_err)
         }
     }
 }
@@ -250,11 +250,13 @@ fn is_hop_by_hop_header(name: &HeaderName) -> bool {
 }
 
 fn text_response(status: StatusCode, message: &'static str) -> Response {
-    Response::builder()
-        .status(status)
-        .header("content-type", "text/plain; charset=utf-8")
-        .body(Body::from(message))
-        .expect("text response should always be valid")
+    let mut response = Response::new(Body::from(message));
+    *response.status_mut() = status;
+    response.headers_mut().insert(
+        axum::http::header::CONTENT_TYPE,
+        HeaderValue::from_static("text/plain; charset=utf-8"),
+    );
+    response
 }
 
 async fn shutdown_signal() {
@@ -262,8 +264,14 @@ async fn shutdown_signal() {
     {
         use tokio::signal::unix::{SignalKind, signal};
 
-        let mut sigterm =
-            signal(SignalKind::terminate()).expect("failed to register SIGTERM handler");
+        let mut sigterm = match signal(SignalKind::terminate()) {
+            Ok(sig) => sig,
+            Err(err) => {
+                warn!(error = %err, "failed to register SIGTERM handler; falling back to ctrl-c only");
+                let _ = tokio::signal::ctrl_c().await;
+                return;
+            }
+        };
 
         tokio::select! {
             _ = tokio::signal::ctrl_c() => {},
