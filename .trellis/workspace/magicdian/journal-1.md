@@ -41,3 +41,35 @@ Implemented eproxy Rust CLI MVP (run/daemon/install), added explicit connect_por
 ### Next Steps
 
 - None - task complete
+
+
+## Session 2: Add CLI version output and startup version log
+
+**Date**: 2026-04-12
+**Task**: Add CLI version output and startup version log
+
+### Summary
+
+Added -V/--version and version subcommand; logs version at startup.
+
+### Main Changes
+
+
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `93802239d2db205a776eca9e38f659a055894b11` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
