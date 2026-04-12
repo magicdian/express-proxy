@@ -11,8 +11,11 @@ use tracing_subscriber::EnvFilter;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 #[derive(Debug, Parser)]
 #[command(name = "eproxy")]
+#[command(version = VERSION)]
 #[command(about = "Local SNI-aware API forwarder", long_about = None)]
 struct Cli {
     #[arg(long, global = true)]
@@ -30,6 +33,8 @@ enum Commands {
     Daemon,
     /// Install Linux systemd user service
     Install,
+    /// Show current version
+    Version,
 }
 
 #[tokio::main]
@@ -42,13 +47,21 @@ async fn main() {
 
 async fn try_main() -> Result<()> {
     let cli = Cli::parse();
-    let layout = config::ensure_layout()?;
-    let config_path = resolve_config_path(cli.config.as_deref(), &layout.config_path);
-
     match cli.command {
-        Commands::Run => run_command(&config_path, &layout.logs_dir).await,
-        Commands::Daemon => daemon_command(&config_path, &layout.pid_file),
-        Commands::Install => install::install_systemd_user_service(&config_path),
+        Commands::Version => {
+            println!("eproxy {VERSION}");
+            Ok(())
+        }
+        command => {
+            let layout = config::ensure_layout()?;
+            let config_path = resolve_config_path(cli.config.as_deref(), &layout.config_path);
+            match command {
+                Commands::Run => run_command(&config_path, &layout.logs_dir).await,
+                Commands::Daemon => daemon_command(&config_path, &layout.pid_file),
+                Commands::Install => install::install_systemd_user_service(&config_path),
+                Commands::Version => unreachable!("version handled above"),
+            }
+        }
     }
 }
 
@@ -56,7 +69,7 @@ async fn run_command(config_path: &Path, logs_dir: &Path) -> Result<()> {
     let resolved = config::load_or_bootstrap(config_path)?;
     let _logging_guard = init_logging(logs_dir, &resolved.log_level)?;
 
-    info!(config = %config_path.display(), "starting eproxy");
+    info!(version = VERSION, config = %config_path.display(), "starting eproxy");
     proxy::run(resolved).await
 }
 
