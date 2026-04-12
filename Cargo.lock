@@ -275,7 +275,7 @@ dependencies = [
 
 [[package]]
 name = "eproxy"
-version = "2604.12.1"
+version = "2604.12.2"
 dependencies = [
  "anyhow",
  "axum",
